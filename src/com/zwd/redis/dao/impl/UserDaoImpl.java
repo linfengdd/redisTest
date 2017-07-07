@@ -31,7 +31,7 @@ public class UserDaoImpl implements UserDao {
   }  
 
   @Override  
-  public void save(User u) {  
+  public void save(User u) {
       sqlSessionTemplate.insert("insert-user", u);  
   }  
 

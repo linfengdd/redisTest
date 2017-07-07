@@ -4,6 +4,7 @@
  */
 package com.zwd.redis.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zwd.redis.dao.UserDao;
 import com.zwd.redis.models.User;
+import com.zwd.redis.service.UserService;
 
 
 /**
@@ -36,6 +38,9 @@ public class WebHost {
   @Autowired
   UserDao userDao;
   
+  @Autowired
+  UserService userService;
+  
   @RequestMapping(value="/user", method={RequestMethod.GET,RequestMethod.POST},produces="application/json; charset=utf-8") 
   @ResponseBody
   public String handleRequest(HttpServletRequest request)
@@ -50,4 +55,27 @@ public class WebHost {
     JSONObject object=new JSONObject(user);
     return object.toString();
   }
+  
+  
+  @RequestMapping(value="/saveUser", method={RequestMethod.GET,RequestMethod.POST},produces="application/json; charset=utf-8") 
+  @ResponseBody
+  public String handleRequestSave(HttpServletRequest request)
+  {
+      String message="";
+      String count=request.getParameter("count");
+      if(null==count){
+        message="参数count为空，不能插入";
+        loger.debug("参数count为空，不能插入");
+        return message;
+      }
+      int c= Integer.parseInt(count);
+      List<User> list=new ArrayList<>();
+      for(int i=0;i<c;i++){
+        list.add(new User("z"+i,i+""));
+      }
+      userService.SaveUserList(list);
+      message="保存成功了";
+      return message;
+  }
+  
 }
