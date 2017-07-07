@@ -24,7 +24,7 @@ import com.zwd.redis.models.User;
 @Service
 public class UserService {
   
-  @Autowired
+  @Autowired(required = false) 
   TransactionTemplate txTemplate;
   
   @Autowired
