@@ -1,0 +1,53 @@
+/**
+ * Copyright (c) 2017 qm
+ * All right reserved.
+ */
+package com.zwd.redis.web;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zwd.redis.dao.UserDao;
+import com.zwd.redis.models.User;
+
+
+/**
+ * 类描述
+ * @author 朱文德
+ * @create_time 2017年7月3日 下午4:19:22
+ * @project springRdis
+ */
+@Controller
+@RequestMapping("/route") 
+public class WebHost {
+  
+  Logger loger=LoggerFactory.getLogger(getClass());
+  @Autowired
+  UserDao userDao;
+  
+  @RequestMapping(value="/user", method={RequestMethod.GET,RequestMethod.POST},produces="application/json; charset=utf-8") 
+  @ResponseBody
+  public String handleRequest(HttpServletRequest request)
+  {
+    String uid= request.getParameter("uid");
+    if(uid==null){
+      List<User>list= userDao.queryAll();
+      JSONArray array=new JSONArray(list);
+      return array.toString();
+    }
+    User user=userDao.queryById(Integer.parseInt(uid));
+    JSONObject object=new JSONObject(user);
+    return object.toString();
+  }
+}
