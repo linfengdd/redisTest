@@ -73,8 +73,12 @@ public class WebHost {
       for(int i=0;i<c;i++){
         list.add(new User("z"+i,i+""));
       }
-      userService.SaveUserList(list);
-      message="保存成功了";
+      boolean result= userService.SaveUserList(list);
+      if(result)
+        message="保存成功了";
+      else {
+        message="保存失败了";
+      }
       return message;
   }
   

@@ -30,17 +30,25 @@ public class UserService {
   @Autowired
   UserDao userDao;
   
-  public void SaveUserList(final List<User> list){
+  public Boolean SaveUserList(final List<User> list){
       
-    int retVal =txTemplate.execute(new TransactionCallback<Integer>(){
+    Boolean retVal =txTemplate.execute(new TransactionCallback<Boolean>(){
 
         @Override
-        public Integer doInTransaction(TransactionStatus status) { 
-          for (User user : list) {
-            userDao.save(user);
-          } 
-          return list.size();
+        public Boolean doInTransaction(TransactionStatus status) { 
+          boolean result=true;
+          try {
+            for (User user : list) {
+              userDao.save(user);
+            }
+        } catch (Exception e) {
+            status.setRollbackOnly();
+            result = false;
+            System.out.println("Transfer Error!");
+        }
+        return result;
         }    
       });
+    return retVal;
   }
 }
